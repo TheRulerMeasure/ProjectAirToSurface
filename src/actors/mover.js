@@ -1,4 +1,20 @@
 
+const forwardMover = (k, maxSpeed = 150) => {
+    return {
+        id: "mover",
+
+        require: [ "pos", "rotate" ],
+
+        maxSpeed: maxSpeed,
+
+        fixedUpdate() {
+            const rad = k.deg2rad(this.angle)
+            this.moveBy(Math.cos(rad) * this.maxSpeed * k.fixedDt(),
+                        Math.sin(rad) * this.maxSpeed * k.fixedDt())
+        },
+    }
+}
+
 const mover = (k, maxSpeed = 100, acceleration = 680, friction = 510) => {
     return {
         id: "mover",
@@ -47,4 +63,5 @@ const mover = (k, maxSpeed = 100, acceleration = 680, friction = 510) => {
     }
 }
 
+export { forwardMover }
 export default mover
