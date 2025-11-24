@@ -23,10 +23,13 @@ const pfbLaser = (k, pos) => ([
 
 const addLaser = (k, pos) => {
     const laser = k.add(pfbLaser(k, pos))
+
     laser.onCollide("building", (obj, col) => {
-        laser.destroy()
         if (obj.has("health")) {
-            obj.hp--
+            if (obj.hp > 0) {
+                obj.hp--
+                laser.destroy()
+            }
         }
     })
 }
@@ -39,9 +42,11 @@ const saucerGun = k => {
 
         require: [ "pos" ],
 
+        gunLocked: false,
+
         fixedUpdate() {
             delay = Math.max(delay - k.fixedDt(), 0)
-            if (k.isButtonDown("shoot") && delay <= 0) {
+            if (!this.gunLocked && k.isButtonDown("shoot") && delay <= 0) {
                 delay = 0.2
                 addLaser(k, this.pos)
             }

@@ -49,6 +49,8 @@ const addBuilding = (k, pos) => {
     b.use(k.shader("invert", () => ({
         u_amount: b.tintAmount,
     })))
+
+    return b
 }
 
 export default addBuilding

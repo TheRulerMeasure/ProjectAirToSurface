@@ -103,6 +103,8 @@ const addMissile = (k, pos) => {
 
         obj.hp--
     })
+
+    return m
 }
 
 export default addMissile

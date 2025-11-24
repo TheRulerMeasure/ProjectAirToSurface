@@ -1,9 +1,8 @@
 import kaplay from "kaplay"
-import addMissile from "./actors/missile"
 import { GAME_HEIGHT, GAME_WIDTH } from "./constants/gameconst"
-import addBuilding from "./actors/building"
-import addSaucer from "./actors/saucer"
-import spriteLine from "./actors/spriteline"
+import { scene as sceneGame } from "./scenes/game/scene"
+import { scene as sceneMenu } from "./scenes/menu/scene"
+import { scene as sceneStart } from "./scenes/start/scene"
 
 const fragPost = `
 
@@ -108,74 +107,21 @@ k.loadBitmapFont("happy", "sprites/happy.png", 28, 37, {
 k.loadShader("invert", null, fragInvert)
 k.loadShader("post", null, fragPost)
 
+k.loadSound("ui_nav", "sounds/uiNav.wav")
+
+k.loadMusic("music_a", "music/LazToBuildin.wav")
+
 k.setLayers(["bg", "obj", "ui"], "obj")
 
-k.scene("game", () => {
-    const spriteLives = k.add([
-        k.pos(50, 50),
-        spriteLine(k, "saucer_life"),
-        k.layer("ui"),
-    ])
+k.setData("sfx_volume", 0)
+k.setData("bgm_volume", 0)
 
-    const saucerSpawner = k.add([
-        {
-            id: "saucer_spawner",
+k.scene("start", () => sceneStart(k))
+k.scene("menu", () => sceneMenu(k))
+k.scene("game", () => sceneGame(k))
 
-            lives: 5,
+k.onLoad(() => {
+    // musik = k.play("music_a", { loop: true })
 
-            spawnDelay: 1,
-
-            hasSaucer: false,
-
-            fixedUpdate() {
-                if (this.hasSaucer) {
-                    return
-                }
-                if (this.lives <= 0) {
-                    return
-                }
-                this.spawnDelay -= k.fixedDt()
-                if (this.spawnDelay <= 0) {
-                    this.putSaucer()
-                }
-            },
-
-            putSaucer() {
-                if (this.lives <= 0) {
-                    return
-                }
-                this.hasSaucer = true
-
-                const saucer = addSaucer(k, k.vec2(GAME_WIDTH * 0.5, 100))
-
-                saucer.onDeath(() => {
-                    this.spawnDelay = 1
-                    this.hasSaucer = false
-                    this.lives--
-                    this.trigger("lives_changed", this.lives)
-                })
-            },
-        },
-    ])
-
-    saucerSpawner.on("lives_changed", (lives) => {
-        spriteLives.setSpritesAmount(lives)
-    })
-
-    for (let i = 0; i < 8; i++) {
-        addBuilding(k, k.vec2(10 + 70 * i, GAME_HEIGHT))
-    }
-
-    const rocketLauncher = k.add([ k.timer() ])
-    rocketLauncher.loop(2, () => {
-        const x = k.rand(0, GAME_WIDTH)
-        addMissile(k, k.vec2(x, GAME_HEIGHT))
-    })
-
-    k.usePostEffect("post", () => ({
-        u_highcolor: k.rgb(0.47, 0.68, 0.39),
-        u_lowcolor: k.rgb(0.18, 0.20, 0.11),
-    }))
+    k.go("start")
 })
-
-k.onLoad(() => k.go("game"))
