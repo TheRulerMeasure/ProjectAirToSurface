@@ -44,6 +44,7 @@ const addBuilding = (k, pos) => {
         } else {
             b.frame = 3
         }
+        k.play("sound_hit", { volume: k.getData("sfx_volume") })
     })
 
     b.use(k.shader("invert", () => ({

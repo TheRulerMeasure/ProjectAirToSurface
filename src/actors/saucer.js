@@ -49,6 +49,7 @@ const saucerGun = k => {
             if (!this.gunLocked && k.isButtonDown("shoot") && delay <= 0) {
                 delay = 0.2
                 addLaser(k, this.pos)
+                k.play("sound_laser", { volume: k.getData("sfx_volume") })
             }
         },
     }
@@ -108,6 +109,7 @@ const addSaucer = (k, pos) => {
 
     saucer.onDeath(() => {
         k.add(pfbExplosion(k, saucer.pos))
+        k.play("sound_ship_explode", { volume: k.getData("sfx_volume") })
         saucer.destroy()
     })
 

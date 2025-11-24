@@ -1,8 +1,8 @@
 import kaplay from "kaplay"
 import { GAME_HEIGHT, GAME_WIDTH } from "./constants/gameconst"
 import { scene as sceneGame } from "./scenes/game/scene"
-import { scene as sceneMenu } from "./scenes/menu/scene"
 import { scene as sceneStart } from "./scenes/start/scene"
+import { scene as sceneEnd } from "./scenes/end/scene"
 
 const fragPost = `
 
@@ -58,7 +58,7 @@ const k = kaplay({
         shoot: {
             keyboard: [ "x", "j" ],
             gamepad: "rtrigger",
-            mouse: "left",
+            // mouse: "left",
         },
     },
 
@@ -108,8 +108,12 @@ k.loadShader("invert", null, fragInvert)
 k.loadShader("post", null, fragPost)
 
 k.loadSound("ui_nav", "sounds/uiNav.wav")
+k.loadSound("sound_select", "sounds/blipSelect.wav")
+k.loadSound("sound_ship_explode", "sounds/shipExplosion.wav")
+k.loadSound("sound_laser", "sounds/laserShoot.wav")
+k.loadSound("sound_hit", "sounds/buildingHit.wav")
 
-k.loadMusic("music_a", "music/LazToBuildin.wav")
+// k.loadMusic("music_a", "music/LazToBuildin.wav")
 
 k.setLayers(["bg", "obj", "ui"], "obj")
 
@@ -117,8 +121,8 @@ k.setData("sfx_volume", 0)
 k.setData("bgm_volume", 0)
 
 k.scene("start", () => sceneStart(k))
-k.scene("menu", () => sceneMenu(k))
 k.scene("game", () => sceneGame(k))
+k.scene("end", () => sceneEnd(k))
 
 k.onLoad(() => {
     // musik = k.play("music_a", { loop: true })

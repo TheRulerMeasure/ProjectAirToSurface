@@ -41,8 +41,8 @@ const compMenu = k => ({
         ])
 
         k.add([
-            k.text("Press <Left Mouse Button> to start!"),
-            k.pos(10, 600),
+            k.text("Press <X> to start!", { font: "happy" }),
+            k.pos(30, 600),
         ])
 
         k.setData("sfx_volume", this.volumes[0] * 0.01)
@@ -95,6 +95,10 @@ const compMenu = k => ({
 
         k.play("ui_nav", { volume: k.getData("sfx_volume") })
     },
+
+    playGame() {
+        k.go("game")
+    },
 })
 
 const scene = k => {
@@ -112,6 +116,9 @@ const scene = k => {
         } else if (btn == "move_down") {
             menu.nextBtn()
         }
+    })
+    menu.onButtonPress("shoot", () => {
+        menu.playGame()
     })
 
     k.usePostEffect("post", () => ({

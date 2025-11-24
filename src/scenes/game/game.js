@@ -44,16 +44,21 @@ const game = k => {
         updateGameNormal() {
             if (this.playerSpawnerIsEmpty) {
                 this.trigger("player_lost")
+                k.setData("outCome", 0)
                 return GAME_END
             }
             if (this.buildingsAllDestroyed) {
                 this.trigger("player_won")
+                k.setData("outCome", 1)
                 return GAME_END
             }
             return GAME_NORMAL
         },
 
         updateGameEnd() {
+            if (this.gameStateTime > 3) {
+                k.go("end")
+            }
             return GAME_END
         },
 
