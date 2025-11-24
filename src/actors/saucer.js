@@ -1,6 +1,11 @@
+import { DEPTH_LASER, DEPTH_SAUCER } from "../constants/gameconst"
+import pfbExplosion from "../effects/explosion"
+import invc from "./invincible"
+import mover from "./mover"
 
 const pfbLaser = (k, pos) => ([
     k.sprite("laser"),
+    k.z(DEPTH_LASER),
     k.pos(pos),
     k.rotate(90),
     k.anchor("center"),
@@ -20,6 +25,9 @@ const addLaser = (k, pos) => {
     const laser = k.add(pfbLaser(k, pos))
     laser.onCollide("building", (obj, col) => {
         laser.destroy()
+        if (obj.has("health")) {
+            obj.hp--
+        }
     })
 }
 
@@ -45,7 +53,7 @@ const saucerUserInput = k => {
     return {
         id: "saucer_user_input",
 
-        require: ["mover"],
+        require: [ "mover" ],
 
         update() {
             if (k.isButtonDown("move_right")) {
@@ -67,5 +75,38 @@ const saucerUserInput = k => {
     }
 }
 
-export { pfbLaser, saucerGun }
-export default saucerUserInput
+const pfbSaucer = (k, pos) => ([
+    k.sprite("saucer"),
+    k.opacity(1),
+    k.z(DEPTH_SAUCER),
+    k.health(1),
+    k.pos(pos),
+    k.anchor("center"),
+    k.area({
+        shape: new k.Polygon([
+            k.vec2(-14, -14),
+            k.vec2(14, -14),
+            k.vec2(14, 14),
+            k.vec2(-14, 14),
+        ]),
+    }),
+    k.body(),
+    mover(k),
+    invc(k),
+    saucerGun(k),
+    saucerUserInput(k),
+    "saucer",
+])
+
+const addSaucer = (k, pos) => {
+    const saucer = k.add(pfbSaucer(k, pos))
+
+    saucer.onDeath(() => {
+        k.add(pfbExplosion(k, saucer.pos))
+        saucer.destroy()
+    })
+
+    return saucer
+}
+
+export default addSaucer

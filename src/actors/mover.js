@@ -15,7 +15,7 @@ const forwardMover = (k, maxSpeed = 150) => {
     }
 }
 
-const mover = (k, maxSpeed = 100, acceleration = 680, friction = 510) => {
+const mover = (k, maxSpeed = 150, acceleration = 680, friction = 510) => {
     return {
         id: "mover",
 
